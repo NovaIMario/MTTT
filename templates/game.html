@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            width: 300px;
+            margin: 20px auto;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            border: 2px solid black;
+            font-size: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Tic Tac Toe</h1>
+<h2 id="status">Connecting...</h2>
+
+<div id="board"></div>
+
+<script>
+const room = "{{ room_id }}";
+const ws = new WebSocket(`ws://${location.host}/ws/${room}`);
+
+let mySymbol = "";
+
+const board = document.getElementById("board");
+
+for (let i = 0; i < 9; i++) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.dataset.index = i;
+
+    cell.onclick = () => {
+        ws.send(i);
+    };
+
+    board.appendChild(cell);
+}
+
+ws.onmessage = function(event) {
+    const msg = JSON.parse(event.data);
+
+    if (msg.type === "full") {
+        alert("Room is full");
+        window.location.href = "/";
+    }
+
+    if (msg.type === "joined") {
+        mySymbol = msg.symbol;
+        document.getElementById("status").innerText =
+            "You are " + mySymbol + ". Waiting...";
+    }
+
+    if (msg.type === "start") {
+        document.getElementById("status").innerText =
+            "Game started. O goes first.";
+    }
+
+    if (msg.type === "move") {
+        document.querySelectorAll(".cell")[msg.index].innerText = msg.symbol;
+    }
+
+    if (msg.type === "turn") {
+        document.getElementById("status").innerText =
+            msg.turn + "'s turn";
+    }
+
+    if (msg.type === "wait") {
+        alert("Not your turn");
+    }
+
+    if (msg.type === "win") {
+        document.body.innerHTML = "<h1>You Win!</h1>";
+    }
+
+    if (msg.type === "lose") {
+        document.body.innerHTML = "<h1>You Lose!</h1>";
+    }
+
+    if (msg.type === "draw") {
+        document.body.innerHTML = "<h1>Draw!</h1>";
+    }
+
+    if (msg.type === "opponent_left") {
+        alert("Opponent disconnected");
+        window.location.href = "/";
+    }
+};
+</script>
+
+</body>
+</html>

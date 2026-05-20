@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiplayer Tic Tac Toe</title>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+
+    <input id="roomInput" placeholder="Enter Room ID">
+    <button onclick="joinRoom()">Join Room</button>
+
+    <script>
+        function joinRoom() {
+            const room = document.getElementById("roomInput").value.trim();
+
+            if (room === "") {
+                alert("Enter a room ID");
+                return;
+            }
+
+            window.location.href = "/game/" + room;
+        }
+    </script>
+</body>
+</html>
