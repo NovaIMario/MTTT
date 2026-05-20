@@ -70,7 +70,7 @@ ws.onmessage = function(event) {
 
     if (msg.type === "start") {
         document.getElementById("status").innerText =
-            "Game started. O goes first.";
+            "Game started. "+msg.turn;
     }
 
     if (msg.type === "move") {
@@ -79,7 +79,7 @@ ws.onmessage = function(event) {
 
     if (msg.type === "turn") {
         document.getElementById("status").innerText =
-            msg.turn + "'s turn";
+            msg.turn;
     }
 
     if (msg.type === "wait") {

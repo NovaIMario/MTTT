@@ -70,7 +70,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
         for player, sym in room["players"]:
             await player.send_text(json.dumps({
                 "type": "start",
-                "turn": "O"
+                "turn": "Your turn" if sym == room["turn"] else "Wait"
             }))
 
     try:
@@ -121,14 +121,16 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                     await player.send_text(json.dumps({
                         "type": msg_type
                     }))
+                
+                room[room_id].clear()
                 return
 
             room["turn"] = "X" if room["turn"] == "O" else "O"
 
-            for player, _ in room["players"]:
+            for player, sym in room["players"]:
                 await player.send_text(json.dumps({
                     "type": "turn",
-                    "turn": room["turn"]
+                    "turn": "Your turn" if sym == room["turn"] else "Wait"
                 }))
 
     except WebSocketDisconnect:
