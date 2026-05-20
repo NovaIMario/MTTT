@@ -65,12 +65,7 @@ ws.onmessage = function(event) {
     if (msg.type === "joined") {
         mySymbol = msg.symbol;
         document.getElementById("status").innerText =
-            "You are " + mySymbol + ". Waiting...";
-    }
-
-    if (msg.type === "start") {
-        document.getElementById("status").innerText =
-            "Game started. "+msg.turn;
+            "You are [" + mySymbol + "]. Waiting...";
     }
 
     if (msg.type === "move") {
